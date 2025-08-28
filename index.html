@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Site Spécial</title>
+    <!-- Chargement de la police "Nosifier-Regular" depuis Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nosifier&display=swap" rel="stylesheet">
     <!-- Chargement de Tailwind CSS pour un style rapide et moderne -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -38,6 +42,31 @@
             transition: opacity 0.5s ease-in-out;
         }
 
+        /* Styles pour la signature animée */
+        .signature {
+            position: fixed;
+            bottom: 5vh; /* Utilise vh pour une taille responsive */
+            left: 50%;
+            transform: translateX(-50%); /* Centrage horizontal */
+            color: rgba(255, 255, 255, 0.4); /* Couleur transparente */
+            font-family: 'Nosifier', sans-serif;
+            font-size: clamp(1rem, 5vw, 2.5rem); /* Taille de texte adaptative */
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            animation: pulse 2s infinite alternate; /* Nouvelle animation en boucle */
+        }
+
+        @keyframes pulse {
+            from {
+                transform: translateX(-50%) scale(1);
+                opacity: 0.4;
+            }
+            to {
+                transform: translateX(-50%) scale(1.05);
+                opacity: 0.6;
+            }
+        }
+
         /* Cache les contrôles natifs de la vidéo */
         video::-webkit-media-controls {
             display: none !important;
@@ -62,14 +91,19 @@
     <div class="video-container">
         <!-- Première vidéo -->
         <video id="video1" class="video-background" autoplay playsinline preload="auto">
-            <source src="https://cqprsohqkcntkcddlifp.supabase.co/storage/v1/object/public/videos/1756419647189-0fzzndvd8q4.mp4" type="video/mp4">
+            <source src="https://cqprsohqkcntkcddlifp.supabase.co/storage/v1/object/public/videos/1756420824907-edrpuesut5q.mp4" type="video/mp4">
             Votre navigateur ne prend pas en charge la balise vidéo.
         </video>
         <!-- Deuxième vidéo, cachée au début -->
         <video id="video2" class="video-background" playsinline preload="auto" style="opacity: 0;">
-            <source src="https://cqprsohqkcntkcddlifp.supabase.co/storage/v1/object/public/videos/1756419647189-0fzzndvd8q4.mp4" type="video/mp4">
+            <source src="https://cqprsohqkcntkcddlifp.supabase.co/storage/v1/object/public/videos/1756420824907-edrpuesut5q.mp4" type="video/mp4">
             Votre navigateur ne prend pas en charge la balise vidéo.
         </video>
+    </div>
+
+    <!-- La signature -->
+    <div class="signature">
+        by SHADOW
     </div>
 
     <script>
