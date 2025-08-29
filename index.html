@@ -221,7 +221,7 @@
     </div>
 
     <!-- Contenu principal du site -->
-    <div id="main-content">
+    <div id="main-content" class="absolute inset-0 flex flex-col items-center justify-center p-4">
         <!-- Conteneur pour les vidéos de fond -->
         <div class="video-container">
             <!-- Première vidéo, visible au début -->
@@ -243,26 +243,29 @@
                 <feDisplacementMap in="SourceGraphic" in2="noise" scale="77" />
             </filter>
         </svg>
+        
+        <!-- Conteneur pour les boutons -->
+        <div class="z-50 flex flex-col items-center gap-6 mt-16">
+            <!-- Le bouton TikTok avec le design "verre liquide" -->
+            <a href="https://www.tiktok.com/@shadow_ff18?_t=ZN-8zGZd7acOkY&_r=1" target="_blank" class="glass-button">
+                <div class="glass-filter"></div>
+                <div class="glass-overlay"></div>
+                <div class="glass-specular"></div>
+                <div class="glass-content">
+                    <span>TIK TOK</span>
+                </div>
+            </a>
 
-        <!-- Le bouton TikTok avec le design "verre liquide" -->
-        <a href="https://www.tiktok.com/@shadow_ff18?_t=ZN-8zGZd7acOkY&_r=1" target="_blank" class="glass-button" style="position: fixed; top: 25vh; left: 50%; transform: translateX(-50%);">
-            <div class="glass-filter"></div>
-            <div class="glass-overlay"></div>
-            <div class="glass-specular"></div>
-            <div class="glass-content">
-                <span>TIK TOK</span>
-            </div>
-        </a>
-
-        <!-- Le bouton Instagram avec le design "verre liquide" -->
-        <a href="https://www.instagram.com/shadow999ff?igsh=bXBvdjB6Zzg4NWRu" target="_blank" class="glass-button" style="position: fixed; top: 35vh; left: 50%; transform: translateX(-50%);">
-            <div class="glass-filter"></div>
-            <div class="glass-overlay"></div>
-            <div class="glass-specular"></div>
-            <div class="glass-content">
-                <span>INSTAGRAM</span>
-            </div>
-        </a>
+            <!-- Le bouton Instagram avec le design "verre liquide" -->
+            <a href="https://www.instagram.com/shadow999ff?igsh=bXBvdjB6Zzg4NWRu" target="_blank" class="glass-button">
+                <div class="glass-filter"></div>
+                <div class="glass-overlay"></div>
+                <div class="glass-specular"></div>
+                <div class="glass-content">
+                    <span>INSTAGRAM</span>
+                </div>
+            </a>
+        </div>
 
         <!-- La signature animée en bas de la page -->
         <div class="signature">
@@ -275,13 +278,22 @@
         document.addEventListener('DOMContentLoaded', () => {
             const entryPage = document.getElementById('entry-page');
             const entryButton = document.getElementById('entry-button');
-            const mainContent = document.getElementById('main-content');
             const videoContainer = document.querySelector('.video-container');
             const video1 = document.getElementById('video1');
             const video2 = document.getElementById('video2');
             let currentVideo = video1;
             let nextVideo = video2;
             let isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+            
+            // Fonction pour précharger la vidéo
+            const preloadVideo = (videoElement) => {
+                return new Promise((resolve, reject) => {
+                    videoElement.preload = "auto";
+                    videoElement.load();
+                    videoElement.addEventListener('canplaythrough', resolve, { once: true });
+                    videoElement.addEventListener('error', reject, { once: true });
+                });
+            };
 
             // Gère l'effet de déplacement de la souris sur les boutons "verre"
             const glassElements = document.querySelectorAll('.glass-button');
@@ -338,8 +350,15 @@
                 video1.play().catch(error => {
                     console.log("La lecture automatique a été bloquée : ", error);
                 });
-            });
 
+                // Démarre le préchargement de la vidéo suivante après le clic initial
+                preloadVideo(nextVideo).then(() => {
+                    console.log("Next video preloaded successfully.");
+                }).catch(error => {
+                    console.error("Failed to preload next video: ", error);
+                });
+            });
+            
             // Fonction pour basculer entre les deux vidéos de fond
             const switchVideos = () => {
                 // Diminue l'opacité de la vidéo actuelle
@@ -355,6 +374,9 @@
                 // Redémarre la nouvelle vidéo pour une lecture en boucle fluide
                 currentVideo.currentTime = 0;
                 currentVideo.play();
+                
+                // Précharge la vidéo suivante
+                preloadVideo(nextVideo);
             };
 
             // Écouteur d'événement pour déclencher le basculement juste avant la fin de la vidéo
@@ -383,7 +405,6 @@
             video2.addEventListener('error', (e) => {
                 console.error("Erreur de chargement de la vidéo 2 : ", e);
             });
-
         });
 
         // Désactive le clic droit pour empêcher l'accès au menu contextuel et "Inspecter l'élément"
