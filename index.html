@@ -2,68 +2,30 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <!-- Définit la configuration de la vue pour une adaptabilité sur tous les appareils -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Site Spécial</title>
-    <!-- Chargement de la police "Nosifier-Regular" depuis Google Fonts -->
+    
+    <!-- Chargement de la police "Nosifier" depuis Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nosifier&display=swap" rel="stylesheet">
+    
     <!-- Chargement de Tailwind CSS pour un style rapide et moderne -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chargement de la librairie pour le bouton liquid-glass -->
-    <script type="module" crossorigin src="https://glass.danilofiumi.com/web-comps/boundle.js"></script>
+    
     <style>
-        /* Styles pour l'écran d'entrée initial */
-        #start-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: black;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000; /* Assure que cet écran est au-dessus de tout */
-            transition: opacity 1s ease-in-out;
-            opacity: 1;
-        }
-
-        #start-screen.fade-out {
-            opacity: 0;
-            pointer-events: none; /* Désactive les interactions après le fondu */
-        }
-        
-        .start-title {
-            color: white;
-            font-family: 'Nosifier', sans-serif;
-            font-size: clamp(3rem, 10vw, 8rem); /* Taille responsive */
-            text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            margin-bottom: 2rem;
-            animation: pulse-title 2s infinite alternate;
-        }
-
-        @keyframes pulse-title {
-            from {
-                transform: scale(1);
-                text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            }
-            to {
-                transform: scale(1.05);
-                text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6);
-            }
-        }
-
-        /* Styles pour la vidéo de fond en plein écran */
+        /* Réinitialisation de base pour l'HTML et le corps de la page */
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
-            overflow: hidden; /* Empêche le défilement */
+            overflow: hidden; /* Empêche le défilement de la page */
             background-color: #000;
+            font-family: 'Nosifier', sans-serif;
         }
+
+        /* Conteneur pour la vidéo de fond en plein écran */
         .video-container {
             position: absolute;
             top: 50%;
@@ -74,7 +36,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            opacity: 0; /* Caché par défaut */
+            transition: opacity 1s ease-in-out;
         }
+
+        /* Style pour les vidéos de fond */
         .video-background {
             position: absolute;
             min-width: 100%;
@@ -82,42 +48,42 @@
             width: auto;
             height: auto;
             z-index: -1;
-            object-fit: cover;
+            object-fit: cover; /* Assure que la vidéo couvre tout l'écran */
             opacity: 1;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 0.5s ease-in-out; /* Effet de fondu lors du changement de vidéo */
         }
 
-        /* Styles pour la signature animée */
+        /* Styles pour la signature animée au bas de la page */
         .signature {
             position: fixed;
-            bottom: 5vh; /* Utilise vh pour une taille responsive */
+            bottom: 5vh; /* Positionnement par rapport au bas de l'écran */
             left: 50%;
             transform: translateX(-50%); /* Centrage horizontal */
-            color: rgba(255, 255, 255, 0.4); /* Couleur transparente */
-            font-family: 'Nosifier', sans-serif;
-            font-size: 2vh; /* Taille de texte beaucoup plus petite */
+            color: rgba(255, 255, 255, 0.4); /* Couleur blanche semi-transparente */
+            font-size: clamp(1rem, 5vw, 2.5rem); /* Taille de texte adaptative */
             letter-spacing: 5px;
             text-transform: uppercase;
-            animation: pulse 2s infinite alternate; /* Nouvelle animation en boucle */
+            animation: pulse 2s infinite alternate; /* Animation de pulsation en boucle */
         }
 
+        /* Définition de l'animation de pulsation */
         @keyframes pulse {
             from {
                 transform: translateX(-50%) scale(1);
                 opacity: 0.4;
             }
             to {
-                transform: translateX(-50%) scale(1.1);
+                transform: translateX(-50%) scale(1.05);
                 opacity: 0.6;
             }
         }
         
-        /* Glass Button and Modal Container */
-        .glass-container {
+        /* Styles pour les boutons à effet "verre liquide" */
+        .glass-button {
             --bg-color: rgba(255, 255, 255, 0.25);
             --highlight: rgba(255, 255, 255, 0.75);
             --text: #ffffff;
-
+            
             position: relative;
             padding: 12px 24px;
             border: none;
@@ -129,19 +95,16 @@
             outline: none;
             text-decoration: none;
             font-family: sans-serif;
-            min-width: 180px; 
+            min-width: 180px; /* Assure que les boutons ont la même largeur */
             text-align: center;
-            display: block; /* S'assure que l'élément prend toute la largeur disponible */
-            margin: 10px auto; /* Centre les éléments et ajoute de l'espace */
-            z-index: 10; /* Assure que les boutons sont au-dessus de la vidéo */
         }
 
-        .glass-container:hover {
-            transform: scale(1.05);
+        .glass-button:hover {
+            transform: scale(1.05); /* Effet de zoom au survol */
         }
 
-        .glass-container:active {
-            transform: scale(0.95);
+        .glass-button:active {
+            transform: scale(0.95); /* Effet de clic */
         }
 
         .glass-filter,
@@ -154,18 +117,18 @@
 
         .glass-filter {
             z-index: 1;
-            backdrop-filter: blur(4px);
-            filter: url(#glass-distortion) saturate(120%) brightness(1.15);
+            backdrop-filter: blur(4px); /* Effet de flou de fond */
+            filter: url(#glass-distortion) saturate(120%) brightness(1.15); /* Applique le filtre SVG */
         }
 
         .glass-overlay {
             z-index: 2;
-            background: var(--bg-color);
+            background: var(--bg-color); /* Couleur de fond semi-transparente */
         }
 
         .glass-specular {
             z-index: 3;
-            box-shadow: inset 1px 1px 1px var(--highlight);
+            box-shadow: inset 1px 1px 1px var(--highlight); /* Effet de surbrillance interne */
         }
 
         .glass-content {
@@ -176,108 +139,14 @@
             font-size: 16px;
         }
 
-        /* Dark mode styles */
+        /* Styles pour le mode sombre (si l'utilisateur a un thème sombre) */
         @media (prefers-color-scheme: dark) {
-            .glass-container {
+            .glass-button {
                 --bg-color: rgba(0, 0, 0, 0.25);
                 --highlight: rgba(255, 255, 255, 0.15);
             }
         }
         
-        /* Styles pour la fenêtre modale (liquid-glass) */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
-
-        .modal.show {
-            display: flex;
-            opacity: 1;
-        }
-
-        .liquid-glass {
-            width: 290px;
-            min-height: 160px; /* Utilisation de min-height pour s'adapter au contenu */
-            padding: 24px;
-            background: rgba(255, 255, 255, 0.24);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            box-shadow: 0 0 36px rgba(99, 102, 241, 0.28), 0 12px 48px rgba(31, 38, 135, 0.28);
-            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 50%);
-            transition: all 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
-            cursor: pointer;
-            text-align: center;
-            color: white;
-            position: relative;
-        }
-
-        .liquid-glass:hover {
-            background: rgba(255, 255, 255, 0.27);
-            transform: translateY(-4px);
-            filter: none;
-        }
-        
-        /* Animations d'entrée et de sortie */
-        .modal-content-animated {
-            animation: slideIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
-        }
-        
-        /* Animation de sortie */
-        .modal-content-animated.animate-out {
-            animation: slideOut 0.5s ease-in forwards;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateY(-50px) scale(0.9);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
-        }
-        
-        @keyframes slideOut {
-            from {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
-            to {
-                transform: translateY(50px) scale(0.9);
-                opacity: 0;
-            }
-        }
-        
-        .liquid-glass .close-button {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-        
-        .liquid-glass .close-button:hover {
-            transform: scale(1.1);
-        }
-
         /* Cache les contrôles natifs de la vidéo */
         video::-webkit-media-controls {
             display: none !important;
@@ -295,71 +164,88 @@
             display: none !important;
         }
 
-        /* Styles du bouton de son */
-        .sound-button {
+        /* Styles de la page d'entrée */
+        #entry-page {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            color: #fff;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            cursor: pointer;
-            z-index: 11;
-            transition: transform 0.2s ease-in-out;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
         }
-        .sound-button:hover {
-            transform: scale(1.1);
+
+        #entry-page.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        #entry-button {
+            font-size: 2rem;
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #entry-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        #entry-title {
+            font-size: clamp(2rem, 10vw, 5rem);
+            margin-bottom: 2rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
         }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- Écran d'entrée qui apparaît au chargement de la page -->
-    <div id="start-screen">
-        <h1 class="start-title">SHADOW</h1>
-        <button id="enter-button" class="glass-container">
-            <div class="glass-filter"></div>
-            <div class="glass-overlay"></div>
-            <div class="glass-specular"></div>
-            <div class="glass-content">
-                <span>ENTRER</span>
-            </div>
-        </button>
+    <!-- Page d'entrée (splash page) -->
+    <div id="entry-page">
+        <h1 id="entry-title">SHADOW</h1>
+        <button id="entry-button">ENTRER</button>
     </div>
 
-    <!-- Conteneur pour les vidéos de fond (initialement caché) -->
-    <div class="video-container" style="opacity: 0; transition: opacity 1s;">
-        <!-- Première vidéo -->
-        <video id="video1" class="video-background" playsinline muted>
-            <source src="https://cqprsohqkcntkcddlifp.supabase.co/storage/v1/object/public/videos/1756420824907-edrpuesut5q.mp4" type="video/mp4">
-            Votre navigateur ne prend pas en charge la balise vidéo.
-        </video>
-        <!-- Deuxième vidéo, cachée au début -->
-        <video id="video2" class="video-background" playsinline muted style="opacity: 0;">
-            <source src="https://cqprsohqkcntkcddlifp.supabase.co/storage/v1/object/public/videos/1756420824907-edrpuesut5q.mp4" type="video/mp4">
-            Votre navigateur ne prend pas en charge la balise vidéo.
-        </video>
-    </div>
+    <!-- Contenu principal du site -->
+    <div id="main-content">
+        <!-- Conteneur pour les vidéos de fond -->
+        <div class="video-container">
+            <!-- Première vidéo, visible au début -->
+            <video id="video1" class="video-background" playsinline preload="auto">
+                <source src="https://cqprsohqkcntkcddlifp.supabase.co/storage/v1/object/public/videos/1756420824907-edrpuesut5q.mp4" type="video/mp4">
+                Votre navigateur ne prend pas en charge la balise vidéo.
+            </video>
+            <!-- Deuxième vidéo, cachée au début, pour une transition en douceur -->
+            <video id="video2" class="video-background" playsinline preload="auto" style="opacity: 0;">
+                <source src="https://cqprsohqkcntkcddlifp.supabase.co/storage/v1/object/public/videos/1756420824907-edrpuesut5q.mp4" type="video/mp4">
+                Votre navigateur ne prend pas en charge la balise vidéo.
+            </video>
+        </div>
+    
+        <!-- Filtre SVG pour l'effet de distorsion du verre sur les boutons -->
+        <svg style="display: none">
+            <filter id="glass-distortion">
+                <feTurbulence type="turbulence" baseFrequency="0.008" numOctaves="2" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="77" />
+            </filter>
+        </svg>
 
-    <!-- SVG Filter for Glass Distortion -->
-    <svg style="display: none">
-        <filter id="glass-distortion">
-            <feTurbulence type="turbulence" baseFrequency="0.008" numOctaves="2" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="77" />
-        </filter>
-    </svg>
-
-    <!-- Conteneur central pour les boutons -->
-    <div id="main-buttons" style="position: fixed; top: 30vh; left: 50%; transform: translateX(-50%); display: none; flex-direction: column; align-items: center; gap: 20px; z-index: 10;">
-        <!-- Le bouton TikTok -->
-        <a href="https://www.tiktok.com/@shadow_ff18?_t=ZN-8zGZd7acOkY&_r=1" target="_blank" class="glass-container">
+        <!-- Le bouton TikTok avec le design "verre liquide" -->
+        <a href="https://www.tiktok.com/@shadow_ff18?_t=ZN-8zGZd7acOkY&_r=1" target="_blank" class="glass-button" style="position: fixed; top: 25vh; left: 50%; transform: translateX(-50%);">
             <div class="glass-filter"></div>
             <div class="glass-overlay"></div>
             <div class="glass-specular"></div>
@@ -367,9 +253,9 @@
                 <span>TIK TOK</span>
             </div>
         </a>
-    
-        <!-- Le bouton Instagram -->
-        <a href="https://www.instagram.com/shadow999ff?igsh=bXBvdjB6Zzg4NWRu" target="_blank" class="glass-container">
+
+        <!-- Le bouton Instagram avec le design "verre liquide" -->
+        <a href="https://www.instagram.com/shadow999ff?igsh=bXBvdjB6Zzg4NWRu" target="_blank" class="glass-button" style="position: fixed; top: 35vh; left: 50%; transform: translateX(-50%);">
             <div class="glass-filter"></div>
             <div class="glass-overlay"></div>
             <div class="glass-specular"></div>
@@ -378,75 +264,40 @@
             </div>
         </a>
 
-        <!-- Le bouton YouTube qui ouvre la modale -->
-        <button id="youtube-button" class="glass-container">
-            <div class="glass-filter"></div>
-            <div class="glass-overlay"></div>
-            <div class="glass-specular"></div>
-            <div class="glass-content">
-                <span>YOUTUBE</span>
-            </div>
-        </button>
-    </div>
-
-    <!-- Le bouton de son (initialement caché) -->
-    <button id="sound-button" class="sound-button" style="display: none;">
-        <!-- Icône de son SVG -->
-        <svg id="sound-on-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-        <!-- Icône de son coupé SVG -->
-        <svg id="sound-off-icon" style="display: block;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-x"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="m23 9-6 6"/><path d="m17 9 6 6"/></svg>
-    </button>
-
-    <!-- La fenêtre modale personnalisée -->
-    <div id="youtube-modal" class="modal">
-        <div class="liquid-glass modal-content-animated">
-            <span class="close-button">&times;</span>
-            <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">En construction !</h2>
-            <p>La chaîne YouTube n'est pas encore disponible.</p>
-            <p>Revenez plus tard pour la découvrir !</p>
+        <!-- La signature animée en bas de la page -->
+        <div class="signature">
+            by SHADOW
         </div>
     </div>
 
-    <!-- La signature -->
-    <div class="signature">
-        by SHADOW
-    </div>
-
     <script>
+        // S'assure que le script s'exécute une fois que la page est entièrement chargée
         document.addEventListener('DOMContentLoaded', () => {
-            const startScreen = document.getElementById('start-screen');
-            const enterButton = document.getElementById('enter-button');
+            const entryPage = document.getElementById('entry-page');
+            const entryButton = document.getElementById('entry-button');
+            const mainContent = document.getElementById('main-content');
             const videoContainer = document.querySelector('.video-container');
-            const mainButtons = document.getElementById('main-buttons');
-            const soundButton = document.getElementById('sound-button');
-            
             const video1 = document.getElementById('video1');
             const video2 = document.getElementById('video2');
             let currentVideo = video1;
             let nextVideo = video2;
-            
-            // Éléments de la modale YouTube
-            const youtubeButton = document.getElementById('youtube-button');
-            const youtubeModal = document.getElementById('youtube-modal');
-            const modalContent = youtubeModal.querySelector('.modal-content-animated');
-            const closeButton = youtubeModal.querySelector('.close-button');
+            let isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-            const soundOnIcon = document.getElementById('sound-on-icon');
-            const soundOffIcon = document.getElementById('sound-off-icon');
-
-            // Fonctions pour les boutons "verre liquide"
-            const glassElements = document.querySelectorAll('.glass-container');
+            // Gère l'effet de déplacement de la souris sur les boutons "verre"
+            const glassElements = document.querySelectorAll('.glass-button');
             
             glassElements.forEach(element => {
                 element.addEventListener('mousemove', handleMouseMove);
                 element.addEventListener('mouseleave', handleMouseLeave);
             });
             
+            // Fonction pour gérer le mouvement de la souris
             function handleMouseMove(e) {
                 const rect = this.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
                 
+                // Crée un effet de surbrillance avec un gradient radial
                 const specular = this.querySelector('.glass-specular');
                 if (specular) {
                     specular.style.background = `radial-gradient(
@@ -458,6 +309,7 @@
                 }
             }
             
+            // Fonction pour réinitialiser les effets lorsque la souris quitte l'élément
             function handleMouseLeave() {
                 const filter = document.querySelector('#glass-distortion feDisplacementMap');
                 if (filter) {
@@ -469,93 +321,79 @@
                     specular.style.background = 'none';
                 }
             }
-            // Fin des fonctions pour les boutons
 
-            // Fonction pour basculer les vidéos à la fin
+            // Gestion de l'action du bouton d'entrée
+            entryButton.addEventListener('click', () => {
+                // Masque la page d'entrée
+                entryPage.classList.add('hidden');
+                // Affiche le conteneur vidéo
+                videoContainer.style.opacity = 1;
+
+                // Lance la lecture de la vidéo en fonction du système d'exploitation
+                if (isiOS) {
+                    // iOS nécessite une interaction utilisateur pour le son, on lance en muet.
+                    video1.muted = false; // Le bouton a été cliqué, on peut activer le son
+                    video2.muted = false;
+                }
+                video1.play().catch(error => {
+                    console.log("La lecture automatique a été bloquée : ", error);
+                });
+            });
+
+            // Fonction pour basculer entre les deux vidéos de fond
             const switchVideos = () => {
-                // Cache la vidéo actuelle
+                // Diminue l'opacité de la vidéo actuelle
                 currentVideo.style.opacity = 0;
-                
-                // Affiche la vidéo suivante
+                // Augmente l'opacité de la prochaine vidéo
                 nextVideo.style.opacity = 1;
                 
-                // Inverse les références
+                // Inverse les vidéos pour la prochaine boucle
                 const temp = currentVideo;
                 currentVideo = nextVideo;
                 nextVideo = temp;
 
-                // Démarre la nouvelle vidéo
+                // Redémarre la nouvelle vidéo pour une lecture en boucle fluide
+                currentVideo.currentTime = 0;
                 currentVideo.play();
             };
 
-            // Ajout des listeners pour l'événement "ended"
-            video1.addEventListener('ended', switchVideos);
-            video2.addEventListener('ended', switchVideos);
-            
-            // Logique du bouton de son
-            soundButton.addEventListener('click', () => {
-                const isMuted = !currentVideo.muted;
-                currentVideo.muted = isMuted;
-                nextVideo.muted = isMuted;
-                updateSoundButtonIcon();
+            // Écouteur d'événement pour déclencher le basculement juste avant la fin de la vidéo
+            video1.addEventListener('timeupdate', () => {
+                // Déclenche le basculement 0.5 seconde avant la fin de la vidéo
+                if (video1.duration > 0 && video1.currentTime >= video1.duration - 0.5) {
+                    if (currentVideo === video1) {
+                        switchVideos();
+                    }
+                }
             });
 
-            function updateSoundButtonIcon() {
-                if (currentVideo.muted) {
-                    soundOnIcon.style.display = 'none';
-                    soundOffIcon.style.display = 'block';
-                } else {
-                    soundOnIcon.style.display = 'block';
-                    soundOffIcon.style.display = 'none';
+            video2.addEventListener('timeupdate', () => {
+                // Déclenche le basculement 0.5 seconde avant la fin de la vidéo
+                if (video2.duration > 0 && video2.currentTime >= video2.duration - 0.5) {
+                    if (currentVideo === video2) {
+                        switchVideos();
+                    }
                 }
+            });
+
+            // Gère les erreurs de chargement de la vidéo (pour le débogage)
+            video1.addEventListener('error', (e) => {
+                console.error("Erreur de chargement de la vidéo 1 : ", e);
+            });
+            video2.addEventListener('error', (e) => {
+                console.error("Erreur de chargement de la vidéo 2 : ", e);
+            });
+
+        });
+
+        // Désactive le clic droit pour empêcher l'accès au menu contextuel et "Inspecter l'élément"
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Désactive les touches de raccourci pour les outils de développement (ex: F12 ou Ctrl+Shift+I)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I")) {
+                e.preventDefault();
             }
-
-            // Logique de la modale avec les animations d'entrée/sortie
-            youtubeButton.addEventListener('click', () => {
-                youtubeModal.classList.add('show');
-            });
-
-            closeButton.addEventListener('click', () => {
-                modalContent.classList.add('animate-out');
-            });
-            
-            window.addEventListener('click', (event) => {
-                if (event.target === youtubeModal) {
-                    modalContent.classList.add('animate-out');
-                }
-            });
-            
-            modalContent.addEventListener('animationend', (event) => {
-                // On s'assure que c'est bien la fin de l'animation de sortie
-                if (event.animationName === 'slideOut') {
-                    youtubeModal.classList.remove('show');
-                    modalContent.classList.remove('animate-out');
-                }
-            });
-
-            // Logique du bouton d'entrée
-            enterButton.addEventListener('click', () => {
-                // Cache l'écran de démarrage
-                startScreen.classList.add('fade-out');
-
-                // Affiche le reste du contenu
-                setTimeout(() => {
-                    startScreen.style.display = 'none';
-                    videoContainer.style.opacity = 1;
-                    mainButtons.style.display = 'flex';
-                    soundButton.style.display = 'flex';
-                    // Démarre la première vidéo après l'entrée
-                    currentVideo.play();
-                }, 1000); // Fait correspondre le délai à la durée de la transition CSS
-            });
-
-            // Désactivation du clic droit et de l'inspection
-            document.addEventListener('contextmenu', event => event.preventDefault());
-            document.addEventListener('keydown', (e) => {
-                if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I")) {
-                    e.preventDefault();
-                }
-            });
         });
     </script>
 </body>
