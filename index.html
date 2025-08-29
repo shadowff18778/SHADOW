@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Nosifier&display=swap" rel="stylesheet">
     <!-- Chargement de Tailwind CSS pour un style rapide et moderne -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chargement de la librairie pour le bouton liquid-glass -->
+    <script type="module" crossorigin src="https://glass.danilofiumi.com/web-comps/boundle.js"></script>
     <style>
         /* Styles pour la vidéo de fond en plein écran */
         body, html {
@@ -50,7 +52,7 @@
             transform: translateX(-50%); /* Centrage horizontal */
             color: rgba(255, 255, 255, 0.4); /* Couleur transparente */
             font-family: 'Nosifier', sans-serif;
-            font-size: clamp(1rem, 5vw, 2.5rem); /* Taille de texte adaptative */
+            font-size: 2vh; /* Taille de texte beaucoup plus petite */
             letter-spacing: 5px;
             text-transform: uppercase;
             animation: pulse 2s infinite alternate; /* Nouvelle animation en boucle */
@@ -62,17 +64,17 @@
                 opacity: 0.4;
             }
             to {
-                transform: translateX(-50%) scale(1.05);
+                transform: translateX(-50%) scale(1.1);
                 opacity: 0.6;
             }
         }
         
-        /* Glass Button Container */
-        .glass-button {
+        /* Glass Button and Modal Container */
+        .glass-container {
             --bg-color: rgba(255, 255, 255, 0.25);
             --highlight: rgba(255, 255, 255, 0.75);
             --text: #ffffff;
-            
+
             position: relative;
             padding: 12px 24px;
             border: none;
@@ -83,17 +85,18 @@
             transition: transform 0.2s ease;
             outline: none;
             text-decoration: none;
-            font-family: sans-serif; /* Remplacer par la police souhaitée si nécessaire */
-            /* J'ai ajouté un min-width pour que les deux boutons aient la même taille */
+            font-family: sans-serif;
             min-width: 180px; 
             text-align: center;
+            display: block; /* S'assure que l'élément prend toute la largeur disponible */
+            margin: 10px auto; /* Centre les éléments et ajoute de l'espace */
         }
 
-        .glass-button:hover {
+        .glass-container:hover {
             transform: scale(1.05);
         }
 
-        .glass-button:active {
+        .glass-container:active {
             transform: scale(0.95);
         }
 
@@ -131,12 +134,106 @@
 
         /* Dark mode styles */
         @media (prefers-color-scheme: dark) {
-            .glass-button {
+            .glass-container {
                 --bg-color: rgba(0, 0, 0, 0.25);
                 --highlight: rgba(255, 255, 255, 0.15);
             }
         }
         
+        /* Styles pour la fenêtre modale (liquid-glass) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .liquid-glass {
+            width: 290px;
+            min-height: 160px; /* Utilisation de min-height pour s'adapter au contenu */
+            padding: 24px;
+            background: rgba(255, 255, 255, 0.24);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 0 36px rgba(99, 102, 241, 0.28), 0 12px 48px rgba(31, 38, 135, 0.28);
+            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 50%);
+            transition: all 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+            cursor: pointer;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .liquid-glass:hover {
+            background: rgba(255, 255, 255, 0.27);
+            transform: translateY(-4px);
+            filter: none;
+        }
+        
+        /* Animations d'entrée et de sortie */
+        .modal-content-animated {
+            animation: slideIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+        }
+        
+        /* Animation de sortie */
+        .modal-content-animated.animate-out {
+            animation: slideOut 0.5s ease-in forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px) scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(50px) scale(0.9);
+                opacity: 0;
+            }
+        }
+        
+        .liquid-glass .close-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .liquid-glass .close-button:hover {
+            transform: scale(1.1);
+        }
+
         /* Cache les contrôles natifs de la vidéo */
         video::-webkit-media-controls {
             display: none !important;
@@ -153,9 +250,58 @@
         video::-webkit-media-controls-volume-slider {
             display: none !important;
         }
+
+        /* Styles de la nouvelle fenêtre de démarrage */
+        #start-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            font-family: sans-serif;
+            z-index: 200;
+            transition: opacity 1s ease-out; /* Transition plus longue */
+        }
+        #start-overlay h1 {
+            font-size: 10vw; /* Taille du texte en fonction de la largeur de la vue */
+            animation: fadeIn 2s forwards;
+            font-weight: 300; /* Police plus fine */
+            opacity: 0;
+        }
+        #start-overlay p {
+            font-size: 3vw;
+            margin-top: 1vh;
+            animation: fadeIn 2.5s forwards;
+            animation-delay: 0.5s;
+            opacity: 0;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body oncontextmenu="return false;">
+
+    <!-- Nouvel écran de démarrage -->
+    <div id="start-overlay">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold">Bienvenue</h1>
+        <p class="mt-4 text-center">Cliquez pour entrer sur le site</p>
+        <!-- Nouveau bouton liquid-glass -->
+        <sv-liquid-glass id="start-button" styles='{"style":{"roundness":60,"padding_x":"1.5vw","padding_y":"1vh"},"text":{"content":"ENTRER","edit":false,"font_family":"Nosifier","size_weight":500,"font_size":"1.5vh"},"color":{"accent":"#D7DADD"}}' contrast="light"></sv-liquid-glass>
+    </div>
 
     <!-- Conteneur pour les vidéos de fond -->
     <div class="video-container">
@@ -179,25 +325,48 @@
         </filter>
     </svg>
 
-    <!-- Le bouton TikTok avec le nouveau design liquide -->
-    <a href="https://www.tiktok.com/@shadow_ff18?_t=ZN-8zGZd7acOkY&_r=1" target="_blank" class="glass-button" style="position: fixed; top: 25vh; left: 50%; transform: translateX(-50%);">
-        <div class="glass-filter"></div>
-        <div class="glass-overlay"></div>
-        <div class="glass-specular"></div>
-        <div class="glass-content">
-            <span>TIK TOK</span>
-        </div>
-    </a>
+    <!-- Conteneur central pour les boutons -->
+    <div style="position: fixed; top: 30vh; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 20px;">
+        <!-- Le bouton TikTok -->
+        <a href="https://www.tiktok.com/@shadow_ff18?_t=ZN-8zGZd7acOkY&_r=1" target="_blank" class="glass-container">
+            <div class="glass-filter"></div>
+            <div class="glass-overlay"></div>
+            <div class="glass-specular"></div>
+            <div class="glass-content">
+                <span>TIK TOK</span>
+            </div>
+        </a>
+    
+        <!-- Le bouton Instagram -->
+        <a href="https://www.instagram.com/shadow999ff?igsh=bXBvdjB6Zzg4NWRu" target="_blank" class="glass-container">
+            <div class="glass-filter"></div>
+            <div class="glass-overlay"></div>
+            <div class="glass-specular"></div>
+            <div class="glass-content">
+                <span>INSTAGRAM</span>
+            </div>
+        </a>
 
-    <!-- Le bouton Instagram -->
-    <a href="https://www.instagram.com/shadow999ff?igsh=bXBvdjB6Zzg4NWRu" target="_blank" class="glass-button" style="position: fixed; top: 35vh; left: 50%; transform: translateX(-50%);">
-        <div class="glass-filter"></div>
-        <div class="glass-overlay"></div>
-        <div class="glass-specular"></div>
-        <div class="glass-content">
-            <span>INSTAGRAM</span>
+        <!-- Le bouton YouTube qui ouvre la modale -->
+        <button id="youtube-button" class="glass-container">
+            <div class="glass-filter"></div>
+            <div class="glass-overlay"></div>
+            <div class="glass-specular"></div>
+            <div class="glass-content">
+                <span>YOUTUBE</span>
+            </div>
+        </button>
+    </div>
+
+    <!-- La fenêtre modale personnalisée -->
+    <div id="youtube-modal" class="modal">
+        <div class="liquid-glass modal-content-animated">
+            <span class="close-button">&times;</span>
+            <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">En construction !</h2>
+            <p>La chaîne YouTube n'est pas encore disponible.</p>
+            <p>Revenez plus tard pour la découvrir !</p>
         </div>
-    </a>
+    </div>
 
     <!-- La signature -->
     <div class="signature">
@@ -210,26 +379,30 @@
             const video2 = document.getElementById('video2');
             let currentVideo = video1;
             let nextVideo = video2;
-            let isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+            
+            // Éléments de la modale YouTube
+            const youtubeButton = document.getElementById('youtube-button');
+            const youtubeModal = document.getElementById('youtube-modal');
+            const modalContent = youtubeModal.querySelector('.modal-content-animated');
+            const closeButton = youtubeModal.querySelector('.close-button');
+
+            // Nouveaux éléments de l'écran de démarrage
+            const startOverlay = document.getElementById('start-overlay');
+            const startButton = document.getElementById('start-button'); // Maintenant, il sélectionne le composant sv-liquid-glass
 
             // Fonctions pour les boutons "verre liquide"
-            // Add mouse movement interactivity to glass button
-            const glassElements = document.querySelectorAll('.glass-button');
+            const glassElements = document.querySelectorAll('.glass-container');
             
-            // Add mousemove effect for each glass element
             glassElements.forEach(element => {
                 element.addEventListener('mousemove', handleMouseMove);
                 element.addEventListener('mouseleave', handleMouseLeave);
             });
             
-            // Handle mouse movement over glass elements
             function handleMouseMove(e) {
                 const rect = this.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
                 
-                
-                // Add highlight effect
                 const specular = this.querySelector('.glass-specular');
                 if (specular) {
                     specular.style.background = `radial-gradient(
@@ -241,7 +414,6 @@
                 }
             }
             
-            // Reset effects when mouse leaves
             function handleMouseLeave() {
                 const filter = document.querySelector('#glass-distortion feDisplacementMap');
                 if (filter) {
@@ -257,24 +429,18 @@
 
             // Fonction pour basculer les vidéos
             const switchVideos = () => {
-                // Diminue l'opacité de la vidéo actuelle
                 currentVideo.style.opacity = 0;
-                // Augmente l'opacité de la prochaine vidéo
                 nextVideo.style.opacity = 1;
                 
-                // Inverse les vidéos pour la prochaine boucle
                 const temp = currentVideo;
                 currentVideo = nextVideo;
                 nextVideo = temp;
 
-                // Redémarre la prochaine vidéo (qui est maintenant "currentVideo")
                 currentVideo.currentTime = 0;
                 currentVideo.play();
             };
 
-            // Écouteur d'événement pour déclencher le switch juste avant la fin de la vidéo
             video1.addEventListener('timeupdate', () => {
-                // Déclenche le basculement 0.5 seconde avant la fin de la vidéo
                 if (video1.duration > 0 && video1.currentTime >= video1.duration - 0.5) {
                     if (currentVideo === video1) {
                         switchVideos();
@@ -283,7 +449,6 @@
             });
 
             video2.addEventListener('timeupdate', () => {
-                // Déclenche le basculement 0.5 seconde avant la fin de la vidéo
                 if (video2.duration > 0 && video2.currentTime >= video2.duration - 0.5) {
                     if (currentVideo === video2) {
                         switchVideos();
@@ -291,7 +456,6 @@
                 }
             });
 
-            // Gérer les erreurs de chargement pour un débogage facile
             video1.addEventListener('error', (e) => {
                 console.error("Erreur de chargement de la vidéo 1 : ", e);
             });
@@ -299,33 +463,58 @@
                 console.error("Erreur de chargement de la vidéo 2 : ", e);
             });
 
-            // Logique de lecture en fonction du système d'exploitation
-            if (isiOS) {
-                // Sur iOS, la lecture automatique avec son est bloquée.
-                // On lance la vidéo en mode muet
-                video1.muted = true;
-                video2.muted = true;
-                video1.play();
+            // Gère le démarrage du site au clic sur le bouton
+            startButton.addEventListener('click', () => {
+                // Tente de démarrer la vidéo principale
+                const playPromise = video1.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        // La lecture a démarré avec succès
+                        startOverlay.style.opacity = 0;
+                        setTimeout(() => {
+                            startOverlay.style.display = 'none';
+                        }, 500); // Fait disparaître la fenêtre après la transition
+                    }).catch(error => {
+                        // La lecture a été bloquée, la vidéo est démarrée en sourdine
+                        video1.muted = true;
+                        video1.play();
+                        startOverlay.style.opacity = 0;
+                        setTimeout(() => {
+                            startOverlay.style.display = 'none';
+                        }, 500);
+                        console.log("Lecture automatique bloquée. Démarrage en sourdine. Erreur : ", error);
+                    });
+                }
+            });
 
-                // On écoute le premier clic pour retirer le son
-                document.addEventListener('click', () => {
-                    video1.muted = false;
-                    video2.muted = false;
-                    // On relance la lecture pour s'assurer que le son est activé
-                    video1.play();
-                }, { once: true }); // Événement de clic une seule fois
-            } else {
-                // Sur les autres systèmes, on essaie de lire directement avec le son
-                video1.play().catch(error => {
-                    console.log("La lecture automatique avec son a été bloquée : ", error);
-                });
-            }
+            // Logique de la modale avec les animations d'entrée/sortie
+            youtubeButton.addEventListener('click', () => {
+                youtubeModal.classList.add('show');
+            });
+
+            closeButton.addEventListener('click', () => {
+                modalContent.classList.add('animate-out');
+            });
+            
+            window.addEventListener('click', (event) => {
+                if (event.target === youtubeModal) {
+                    modalContent.classList.add('animate-out');
+                }
+            });
+            
+            modalContent.addEventListener('animationend', (event) => {
+                // On s'assure que c'est bien la fin de l'animation de sortie
+                if (event.animationName === 'slideOut') {
+                    youtubeModal.classList.remove('show');
+                    modalContent.classList.remove('animate-out');
+                }
+            });
+
         });
 
-        // Désactive le clic droit pour empêcher l'accès au menu contextuel et "Inspecter l'élément"
         document.addEventListener('contextmenu', event => event.preventDefault());
 
-        // Désactive les touches de raccourci pour les outils de développement (par exemple F12 ou Ctrl+Shift+I)
         document.addEventListener('keydown', (e) => {
             if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I")) {
                 e.preventDefault();
